@@ -1,10 +1,12 @@
 const express = require("express");
 const { connection } = require("./configs/db");
 const { router } = require("./routes/domainRouter");
+const cors = require("cors");
 
 require("dotenv").config();
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get("/", (req, res) => {
   res.send(`
@@ -12,7 +14,7 @@ app.get("/", (req, res) => {
     `);
 });
 
-app.use("/info",router)
+app.use("/info", router);
 
 const PORT = process.env.PORT || 3000;
 
