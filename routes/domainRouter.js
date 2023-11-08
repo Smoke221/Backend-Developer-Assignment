@@ -67,7 +67,6 @@ router.get("/all", async (req, res) => {
 });
 
 router.patch("/update", async (req, res) => {
-  console.log('recieved');
   try {
     const { id, favorite } = req.body;
     const updatedData = await domainModel.findByIdAndUpdate(
@@ -80,11 +79,24 @@ router.patch("/update", async (req, res) => {
       return res.status(404).json({ message: "Data not found" });
     }
 
-    if (updatedData.favorite) {
-      res.json({ message: "Already in favorites" });
-    } else {
-      res.json({ favorite: updatedData.favorite });
+      res.json({ message: "Favorite updated" });
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Internal server error", error: err.message });
+  }
+});
+
+router.delete("/delete/:id", async (req, res) => {
+  try {
+    const pId = req.params.id;
+    const domainExists = await domainModel.findByIdAndDelete({_id:pId});
+
+    if (!domainExists) {
+      return res.status(404).json({ message: "Document not found" });
     }
+
+    res.json({ message: "Document deleted successfully" });
   } catch (err) {
     res
       .status(500)

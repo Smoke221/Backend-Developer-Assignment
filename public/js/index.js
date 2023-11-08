@@ -18,6 +18,7 @@ form.addEventListener("submit", (e) => {
     .catch((error) => {
       console.error("Error:", error);
     });
+    location.reload();
 });
 
 let table = document.querySelector("#table");
@@ -31,7 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     .then((response) => response.json())
     .then((re) => {
       const data = re.data;
-      console.log(data);
       data.forEach((e) => {
         const tr = document.createElement("tr");
         const td1 = document.createElement("td");
@@ -49,8 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const removeButton = document.createElement("button");
         removeButton.textContent = "Remove";
         removeButton.addEventListener("click", () => {
-          // Handle the removal action here
-          // You can remove the corresponding row or perform other actions
+          deleteListing(e._id)
         });
 
         // Create the "Add to Fav" button
@@ -58,7 +57,8 @@ document.addEventListener("DOMContentLoaded", () => {
         addToFavButton.textContent = "Add to Fav";
         addToFavButton.addEventListener("click", () => {
           const newFavoriteStatus = !e.favorite;
-          updateFavoriteStatus(e.id, newFavoriteStatus);
+          updateFavoriteStatus(e._id, newFavoriteStatus);
+          location.reload();
       });
         td6.append(removeButton,addToFavButton)
 
@@ -85,8 +85,20 @@ function updateFavoriteStatus(id, isFavorite) {
       body: JSON.stringify({ id, favorite: isFavorite }),
   })
   .then((response) => response.json())
-  .then((data) => console.log(data))
+  .then((data) => location.reload())
   .catch((error) => {
       console.error("Error updating favorite status:", error);
+  });
+}
+
+// Create function to delete a lisiting.
+function deleteListing(id){
+  fetch(`http://localhost:8000/info/delete/${id}`, {
+      method: "DELETE",
+  })
+  .then((response) => response.json())
+  .then((data) => location.reload())
+  .catch((error) => {
+      console.error("Error deleting", error);
   });
 }
