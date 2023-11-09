@@ -12,7 +12,12 @@ router.post("/scrape", async (req, res) => {
       return res.status(400).json({ message: "URL is required" });
     }
 
-    //const urlInfoExists = await domainModel.find({ domain: url });
+    // Check if the website is already present in the database
+    const existingData = await domainModel.findOne({ domain: url });
+
+    if (existingData) {
+      return res.status(200).json({ message: "Domain already exists"});
+    }
 
     // Make an HTTP request to the provided URL
     const response = await axios.get(url);

@@ -10,15 +10,21 @@ form.addEventListener("submit", (e) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
     },
     body: JSON.stringify({ url: websiteUrl }),
   })
     .then((response) => response.json())
-    .then((data) => console.log(data))
+    .then((data) => {
+      if(data.message === "Domain already exists"){
+        showPopup("Data is already present, check the table");
+      }else{
+        location.reload();
+      }
+    })
     .catch((error) => {
       console.error("Error:", error);
     });
-    location.reload();
 });
 
 let table = document.querySelector("#table");
@@ -43,18 +49,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const td4 = document.createElement("td");
         td4.textContent = arrayToTdString(e.webLinks, 4);
         const td5 = document.createElement("td");
-        td5.textContent = arrayToTdString(e.mediaLinks, 4);
+        e.mediaLinks.slice(0, 4).forEach((link) => {
+          const a = document.createElement("a");
+          a.href = link;
+          a.textContent = link;
+          td5.appendChild(a);
+        });
         const td6 = document.createElement("td");
+        td6.className = "action-buttons";
         // Create the "Remove" button
         const removeButton = document.createElement("button");
-        removeButton.textContent = "Remove";
+        removeButton.textContent = "Delete";
+        removeButton.className = "delete-button";
         removeButton.addEventListener("click", () => {
           deleteListing(e._id)
         });
 
         // Create the "Add to Fav" button
         const addToFavButton = document.createElement("button");
-        addToFavButton.textContent = "Add to Fav";
+        const addToFavButtonText = e.favorite ? 'Remove fav' : 'Add fav';
+        addToFavButton.className = e.favorite ? "remove-fav-button" : "add-fav-button";
+        addToFavButton.textContent = addToFavButtonText
         addToFavButton.addEventListener("click", () => {
           const newFavoriteStatus = !e.favorite;
           updateFavoriteStatus(e._id, newFavoriteStatus);
@@ -101,4 +116,18 @@ function deleteListing(id){
   .catch((error) => {
       console.error("Error deleting", error);
   });
+}
+
+//function for popup message
+function showPopup(message) {
+  const popup = document.createElement("div");
+  popup.textContent = message;
+  popup.className = "popup";
+
+  document.body.appendChild(popup);
+
+  // Set a timeout to remove the popup after 2 seconds
+  setTimeout(() => {
+      popup.remove();
+  }, 2000);
 }
