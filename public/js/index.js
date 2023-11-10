@@ -6,7 +6,7 @@ form.addEventListener("submit", (e) => {
 
   const websiteUrl = websiteUrlInput.value;
 
-  fetch("http://localhost:8000/info/scrape", {
+  fetch("https://fragile-bonnet-hare.cyclic.app/info/scrape", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -29,7 +29,7 @@ form.addEventListener("submit", (e) => {
 
 let table = document.querySelector("#table");
 document.addEventListener("DOMContentLoaded", () => {
-  fetch("http://localhost:8000/info/all", {
+  fetch("https://fragile-bonnet-hare.cyclic.app/info/all", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -92,7 +92,7 @@ function arrayToTdString(arr, limit) {
 }
 // Create a function to handle updating the "favorite" status
 function updateFavoriteStatus(id, isFavorite) {
-  fetch("http://localhost:8000/info/update", {
+  fetch("https://fragile-bonnet-hare.cyclic.app/info/update", {
       method: "PATCH",
       headers: {
           "Content-Type": "application/json",
@@ -108,7 +108,7 @@ function updateFavoriteStatus(id, isFavorite) {
 
 // Create function to delete a lisiting.
 function deleteListing(id){
-  fetch(`http://localhost:8000/info/delete/${id}`, {
+  fetch(`https://fragile-bonnet-hare.cyclic.app/info/delete/${id}`, {
       method: "DELETE",
   })
   .then((response) => response.json())
